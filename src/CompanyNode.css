@@ -1,0 +1,46 @@
+.node {
+  background-color: #66f;
+  border: 1px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  height: 32px;
+  text-overflow: ellipsis;
+}
+
+.nodeLevel2 {
+  padding-left: 16px;
+}
+
+.nodeLevel3 {
+  padding-left: 48px;
+}
+
+.expandButton {
+  color: white;
+  font-size: 32px;
+  line-height: 22px;
+  text-align: center;
+  height: 100%;
+  user-select: none;
+  width: 32px;
+}
+
+.nodeText {
+  color: white;
+  flex: 1;
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.subTree {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}

@@ -1,0 +1,9 @@
+.companiesTree {
+  display: inline-block;
+  list-style-type: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  width: 360px;
+}

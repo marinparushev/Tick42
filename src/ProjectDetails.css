@@ -1,0 +1,27 @@
+.buttons {
+  display: flex;
+}
+
+.button {
+  background-color: #66f;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 4px;
+  text-align: center;
+  width: 150px;
+}
+
+.confirmButton {
+  background-color: lightgreen;
+}
+
+.cancelButton {
+  background-color: red;
+}
+
+.projectEmployees {
+  list-style-type: none;
+}
