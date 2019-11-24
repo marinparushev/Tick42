@@ -1,68 +1,70 @@
 import React, { Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
+import { selectProject } from "./data";
 import "./CompanyDetails.css";
 
-function CompanyDetails() {
+function CompanyDetails(props) {
   const dispatch = useDispatch();
-  const companies = useSelector(state => state.companies.data);
-  const projects = useSelector(state => state.projects.data);
-  const addresses = useSelector(state => state.companyAddresses.data);
-  const selectedCompanyId = useSelector(
-    state => state.companies.selectedCompanyId
-  );
-  const selectedCompany = companies[selectedCompanyId];
-  const companyAddress =
-    Object.keys(addresses)
-      .map(key => addresses[key])
-      .find(address => address.companyId === selectedCompanyId) || {};
-  const { city, country, street, state } = companyAddress;
-  const companyProjects = Object.keys(projects)
-    .map(key => projects[key])
-    .filter(project => project.companyId === selectedCompanyId);
+  const { company, address, projects } = props;
+  const { name } = company;
+  const { city, country, street, state } = address;
 
-  const onSelectProject = projectId => {
-    dispatch({ type: "SELECT_PROJECT", projectId });
+  const onSelectProject = id => {
+    dispatch(selectProject(id));
   };
 
-  return selectedCompany ? (
+  return (
     <div className="companyDetails">
       <h1>Company</h1>
       <dl>
         <dt>Name:</dt>
-        <dd>{selectedCompany.name}</dd>
+        <dd>{name}</dd>
 
-        <dt>Address:</dt>
-        <dd>
-          {companyAddress ? (
-            <span>
-              {city}, {country}, {street}, {state}
-            </span>
-          ) : (
-            "No data"
-          )}
-        </dd>
-
-        {companyProjects.length > 0 && (
+        {city && (
           <Fragment>
-            <dt>Projects:</dt>
-            <dd>
-              <ul>
-                {companyProjects.map(project => {
-                  return (
-                    <li onClick={onSelectProject.bind(this, project.id)}>
-                      {project.name}
-                    </li>
-                  );
-                })}
-              </ul>
-            </dd>
+            <dt>City:</dt>
+            <dd>{city}</dd>
+          </Fragment>
+        )}
+        {country && (
+          <Fragment>
+            <dt>Country:</dt>
+            <dd>{country}</dd>
+          </Fragment>
+        )}
+        {street && (
+          <Fragment>
+            <dt>Street:</dt>
+            <dd>{street}</dd>
+          </Fragment>
+        )}
+        {state && (
+          <Fragment>
+            <dt>State:</dt>
+            <dd>{state}</dd>
           </Fragment>
         )}
       </dl>
+      {projects.length > 0 && (
+        <Fragment>
+          <h2>Projects</h2>
+          <ul className="projectsList">
+            {projects.map(project => {
+              return (
+                <li
+                  key={project.id}
+                  className="projectName"
+                  onClick={onSelectProject.bind(this, project.id)}
+                >
+                  {project.name}
+                </li>
+              );
+            })}
+          </ul>
+        </Fragment>
+      )}
     </div>
-  ) : (
-    ""
   );
 }
 

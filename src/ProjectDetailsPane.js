@@ -1,29 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./ProjectDetails.css";
+import { updateEntities } from "redux-query";
 
-function ProjectDetailsPane(props) {
+import {
+  getSelectedProject,
+  getProjects,
+  getEmployees,
+  selectProject
+} from "./data";
+import "./ProjectDetails.css";
+import ProjectDetails from "./ProjectDetails";
+import ProjectDetailsEdit from "./ProjectDetailsEdit";
+
+function ProjectDetailsPane() {
   const dispatch = useDispatch();
-  const employees = useSelector(state => state.employees.data);
-  const employeesLoaded = useSelector(state => state.employees.employeesLoaded);
-  const projects = useSelector(state => state.projects.data);
-  const selectedProjectId = useSelector(
-    state => state.projects.selectedProjectId
-  );
-  const selectedProject = projects[selectedProjectId];
-  const projectEmployeesId = selectedProject ? selectedProject.employeesId : [];
+  const [isEditing, setEditing] = useState(false);
+  const projects = useSelector(getProjects) || {};
+  const employees = useSelector(getEmployees) || {};
+  const selectedProject = projects[useSelector(getSelectedProject)];
   const companyEmployees = selectedProject
-    ? Object.values(employees).filter(emp => {
-        console.log(
-          emp.firstName,
-          emp.lastName,
-          emp.companyId,
-          selectedProject.companyId
-        );
-        return emp.companyId === selectedProject.companyId;
+    ? Object.values(employees).filter(employee => {
+        return employee.companyId === selectedProject.companyId;
       })
     : [];
-  return;
+
+  const projectEmployees = selectedProject
+    ? Object.values(employees).filter(employee => {
+        return selectedProject.employeesId.indexOf(employee.id) > -1;
+      })
+    : [];
+
+  const onToggleEdit = () => {
+    setEditing(prevIsEditing => !prevIsEditing);
+  };
+
+  const onSave = (projectName, projectEmployees) => {
+    const employeesId = projectEmployees.map(employee => employee.id);
+
+    setEditing(prevIsEditing => !prevIsEditing);
+    dispatch(
+      updateEntities({
+        projects: oldValue => ({
+          ...oldValue,
+          [selectedProject.id]: {
+            ...oldValue[selectedProject.id],
+            name: projectName,
+            employeesId
+          }
+        })
+      })
+    );
+  };
+
+  const onDeleteProject = id => {
+    setEditing(prevIsEditing => !prevIsEditing);
+
+    dispatch(
+      updateEntities({
+        projects: oldValue => {
+          const newValue = { ...oldValue };
+          delete newValue[id];
+          return newValue;
+        }
+      })
+    );
+
+    dispatch(selectProject(undefined));
+  };
+
+  if (!selectedProject) {
+    return null;
+  }
+
+  return isEditing ? (
+    <ProjectDetailsEdit
+      project={selectedProject}
+      companyEmployees={companyEmployees}
+      projectEmployees={projectEmployees}
+      onToggleEdit={onToggleEdit}
+      onSave={onSave}
+      onDeleteProject={onDeleteProject}
+    />
+  ) : (
+    <ProjectDetails
+      project={selectedProject}
+      projectEmployees={projectEmployees}
+      onToggleEdit={onToggleEdit}
+    />
+  );
 }
 
 export default ProjectDetailsPane;

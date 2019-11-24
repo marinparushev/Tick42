@@ -1,28 +1,33 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "./ProjectDetails.css";
 
 function ProjectDetails(props) {
-  // props.projectName, props.employees, props.onToggleEdit
-  const { employees, projectName, onEdit } = props;
+  const { project, projectEmployees, onToggleEdit } = props;
+  const { name } = project;
 
   return (
     <div className="projectDetails">
       <h1>Project</h1>
       <dl>
         <dt>Name:</dt>
-        <dd>{projectName}</dd>
+        <dd>{name}</dd>
       </dl>
 
-      {employees.length > 0 && (
-        <ul>
-          {employees.map(employeeId => {
-            return (
-              <li>{`${employees[employeeId].firstName} ${employees[employeeId].lastName}`}</li>
-            );
-          })}
-        </ul>
+      {projectEmployees && projectEmployees.length > 0 && (
+        <Fragment>
+          <h2>Employees</h2>
+          <ul className="projectEmployees">
+            {projectEmployees.map(employee => {
+              return (
+                <li
+                  key={employee.id}
+                >{`${employee.firstName} ${employee.lastName}`}</li>
+              );
+            })}
+          </ul>
+        </Fragment>
       )}
-      <div className="button" onClick={onEdit}>
+      <div className="button" onClick={onToggleEdit}>
         Edit project
       </div>
     </div>

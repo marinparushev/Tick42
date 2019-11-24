@@ -1,33 +1,29 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useRequest } from "redux-query-react";
 
 import "./CompaniesTree.css";
-import CompanyNode from "./CompanyNode.js";
-import { fetchData } from "./utils/utils.js";
+import CompanyNode from "./CompanyNode";
+import {
+  getCompanies,
+  companiesRequest,
+  getEmployees,
+  employeesRequest
+} from "./data";
 
 function CompaniesTree() {
-  const companies = useSelector(state => state.companies.data);
-  const loading = useSelector(state => state.companies.loading);
-  const error = useSelector(state => state.companies.error);
-  const dispatch = useDispatch();
+  const companies = useSelector(getCompanies) || {};
+  const employees = useSelector(getEmployees) || {};
+  const [{ isPending, status }] = useRequest(companiesRequest);
+  useRequest(employeesRequest);
 
-  useEffect(() => {
-    dispatch(
-      fetchData(
-        "http://localhost:3000/companies.json",
-        "FETCH_COMPANIES",
-        dispatch
-      )
-    );
-  }, [dispatch]);
-
-  const renderCompanies = (companies, loading, error) => {
-    if (loading) {
+  const renderCompanies = () => {
+    if (isPending) {
       return "Loading...";
     }
 
-    if (error) {
-      return error;
+    if (typeof status === "number" && status >= 400) {
+      return `Error loading! Status code: ${status}`;
     }
 
     const companiesCount = Object.keys(companies).length;
@@ -36,22 +32,22 @@ function CompaniesTree() {
       return "No Data";
     }
 
-    return Object.keys(companies).map(company => {
+    return Object.values(companies).map(company => {
+      const companyEmployees = Object.values(employees).filter(emp => {
+        return emp.companyId === company.id;
+      });
       return (
         <CompanyNode
-          key={companies[company].id}
-          id={companies[company].id}
-          name={companies[company].name}
+          key={company.id}
+          id={company.id}
+          name={company.name}
+          employees={companyEmployees}
         />
       );
     });
   };
 
-  return (
-    <ul className="companiesTree">
-      {renderCompanies(companies, loading, error)}
-    </ul>
-  );
+  return <ul className="companiesTree">{renderCompanies()}</ul>;
 }
 
 export default CompaniesTree;

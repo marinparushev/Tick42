@@ -22,6 +22,20 @@
   background-color: red;
 }
 
+.deleteButton {
+  background-color: darkred;
+}
+
 .projectEmployees {
   list-style-type: none;
+}
+
+.projectEmployeesItem {
+  cursor: pointer;
+}
+
+.tick {
+  margin-right: 4px;
+  width: 16px;
+  height: 16px;
 }

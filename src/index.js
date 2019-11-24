@@ -3,9 +3,10 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import { entitiesReducer, queriesReducer, queryMiddleware } from "redux-query";
+import app from "./data/app-reducer";
 import superagentInterface from "redux-query-interface-superagent";
-import thunk from "redux-thunk";
 import { Provider } from "react-redux";
+import { Provider as ReduxQueryProvider } from "redux-query-react";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
@@ -14,7 +15,8 @@ const getEntities = state => state.entities;
 
 const reducer = combineReducers({
   entities: entitiesReducer,
-  queries: queriesReducer
+  queries: queriesReducer,
+  app
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -30,7 +32,9 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ReduxQueryProvider queriesSelector={getQueries}>
+      <App />
+    </ReduxQueryProvider>
   </Provider>,
   document.getElementById("root")
 );

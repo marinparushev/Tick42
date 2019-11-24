@@ -6,3 +6,17 @@
   border-right: 1px solid #000;
   padding: 0 8px;
 }
+
+.projectsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.projectName {
+  background-color: #66f;
+  color: #fff;
+  font-size: 16px;
+  padding: 2px;
+  cursor: pointer;
+  margin: 2px 0;
+}
