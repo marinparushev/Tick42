@@ -8,8 +8,8 @@ function ProjectDetailsEdit(props) {
     project,
     projectEmployees,
     companyEmployees,
-    onToggleEdit,
     onSave,
+    onCancel,
     onDeleteProject
   } = props;
   const { name } = project;
@@ -19,15 +19,10 @@ function ProjectDetailsEdit(props) {
 
   const [projectName, setProjectName] = useState(name);
   const [employees, setEmployees] = useState(
-    companyEmployees.map(employee => {
-      if (projectEmployeesIds.indexOf(employee.id) > -1) {
-        employee.isInProject = true;
-      } else {
-        employee.isInProject = false;
-      }
-
-      return employee;
-    })
+    [...companyEmployees].map(employee => ({
+      ...employee,
+      isInProject: projectEmployeesIds.includes(employee.id)
+    }))
   );
 
   const onProjectNameChange = e => {
@@ -37,8 +32,8 @@ function ProjectDetailsEdit(props) {
 
   const onToggleEmployee = (id, index) => {
     setEmployees(prevEmployees => {
-      let employees = [...prevEmployees];
-      let employee = { ...employees[index] };
+      const employees = [...prevEmployees];
+      const employee = { ...employees[index] };
       employee.isInProject = !employee.isInProject;
       employees[index] = employee;
 
@@ -58,7 +53,7 @@ function ProjectDetailsEdit(props) {
               <li
                 key={employee.id}
                 className="projectEmployeesItem"
-                onClick={onToggleEmployee.bind(this, employee.id, index)}
+                onClick={() => onToggleEmployee(employee.id, index)}
               >
                 {employee.isInProject && (
                   <img alt="checked" className="tick" src={tick} />
@@ -74,20 +69,21 @@ function ProjectDetailsEdit(props) {
       <div className="buttons">
         <div
           className="button confirmButton"
-          onClick={onSave.bind(
-            this,
-            projectName,
-            employees.filter(employee => employee.isInProject)
-          )}
+          onClick={() =>
+            onSave(
+              projectName,
+              employees.filter(employee => employee.isInProject)
+            )
+          }
         >
           OK
         </div>
-        <div className="button cancelButton" onClick={onToggleEdit}>
+        <div className="button cancelButton" onClick={onCancel}>
           Cancel
         </div>
         <div
           className="button deleteButton"
-          onClick={onDeleteProject.bind(this, project.id)}
+          onClick={() => onDeleteProject(project.id)}
         >
           Delete project
         </div>

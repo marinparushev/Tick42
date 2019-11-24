@@ -55,7 +55,7 @@ function CompanyDetails(props) {
                 <li
                   key={project.id}
                   className="projectName"
-                  onClick={onSelectProject.bind(this, project.id)}
+                  onClick={() => onSelectProject(project.id)}
                 >
                   {project.name}
                 </li>

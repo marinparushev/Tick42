@@ -35,7 +35,7 @@ function JobAreaNode(props) {
             <li key={employee.id} className="node nodeLevel3">
               <span
                 className="nodeText"
-                onClick={onSelectEmployee.bind(this, employee)}
+                onClick={() => onSelectEmployee(employee)}
               >
                 {employee.firstName} {employee.lastName}
               </span>

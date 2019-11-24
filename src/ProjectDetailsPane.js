@@ -77,8 +77,8 @@ function ProjectDetailsPane() {
       project={selectedProject}
       companyEmployees={companyEmployees}
       projectEmployees={projectEmployees}
-      onToggleEdit={onToggleEdit}
       onSave={onSave}
+      onCancel={onToggleEdit}
       onDeleteProject={onDeleteProject}
     />
   ) : (
